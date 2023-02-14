@@ -1,0 +1,32 @@
+version: "3"
+services:
+    talantiz:
+        container_name: talantiz
+        build:
+            dockerfile: Dockerfile
+            context: .
+            args:
+                - PROXY=http://<YOUR-IP>:8011
+        volumes:
+            - ".:/var/www/"
+        ports:
+            - "8010:80"
+            - "8011:8011"
+        networks:
+            - talantiz_network
+    pgsql:
+        container_name: pgsql
+        image: postgres:14.5-alpine
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_DB=talantiz
+            - POSTGRES_USER=talantiz
+            - POSTGRES_PASSWORD=talantiz
+        volumes:
+            - "./data:/var/lib/postgresql/data"
+        networks:
+            - talantiz_network
+networks:
+    talantiz_network:
+        driver: bridge
